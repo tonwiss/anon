@@ -42,5 +42,6 @@ if __name__ == "__main__":
         fallbacks=[CommandHandler("start", start)],
     )
     application.add_handler(conv_handler)
+    #application.job_queue()
 
     application.run_polling()

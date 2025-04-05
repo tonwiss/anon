@@ -7,9 +7,11 @@ from telegram import (
 from telegram.ext import (
     ContextTypes,
 )
-
+import datetime
+from datetime import timedelta
+from jobs import send_message
 from constants import CHECKING_DATA
-
+import pytz
 
 from logging_file import logger
 
@@ -28,5 +30,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         chat_id=update.effective_chat.id,
         text="Начни прямо сейчас!",
         reply_markup=markup,
+    )
+    context.job_queue.run_daily(
+        send_message,
+        datetime.time(hour=20, tzinfo=pytz.timezone("ETC/GMT-3")),
+        user_id=update.effective_user.id,
     )
     return CHECKING_DATA
