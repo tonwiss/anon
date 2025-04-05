@@ -1,0 +1,1 @@
+CHATTING, CHECKING_DATA = range(2)
