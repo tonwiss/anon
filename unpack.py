@@ -40,7 +40,10 @@ async def unpacking(update: Update, context: ContextTypes.DEFAULT_TYPE, user1, u
     shutil.rmtree(f_path)
     os.remove("chat_hist/grisha_is_very_cool.zip")
     del context.bot_data[f_path]
-    del context.bot_data[id_mess_hist]
+    try: 
+        del context.bot_data[id_mess_hist]
+    except KeyError:
+        pass
 
 
 def zip_folder(folder_path, zip_path):
