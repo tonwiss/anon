@@ -20,7 +20,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_message.text == "/start":
         await context.bot.send_message(
             chat_id=update.effective_chat.id,
-            text=f"Привет, {update.effective_user.first_name}\nЭто первая версия анонимки",
+            text=f"Привет, {update.effective_user.first_name}\nЭто анонимка школы 1518\nНаслаждайся общением!",
             reply_markup=ReplyKeyboardRemove(),
         )
     keyboard = [[InlineKeyboardButton("Начать общение", callback_data="start_talk")]]

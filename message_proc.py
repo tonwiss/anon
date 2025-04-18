@@ -16,6 +16,13 @@ async def message_processing(update: Update, context: ContextTypes.DEFAULT_TYPE)
     markup = ReplyKeyboardMarkup(
         keyboard=keyboard,
     )
+
+    if os.path.exists(f"chat_hist/chat_{user1.username}_{user2.username}"):
+        f_path = f"chat_hist/chat_{user1.username}_{user2.username}"
+    else:
+        f_path = f"chat_hist/chat_{user2.username}_{user1.username}"
+
+
     if update.effective_message.text:
         await context.bot.send_message(
             chat_id=context.bot_data["dialogs"][update.effective_user.id].id,
@@ -32,15 +39,9 @@ async def message_processing(update: Update, context: ContextTypes.DEFAULT_TYPE)
             )
     elif update.effective_message.photo:
         print("AAAAAAAAAAAAAAAAAAAAAAA")
-        keyboard = [["Остановить общение"]]
-        markup = ReplyKeyboardMarkup(
-            keyboard=keyboard,
-        )
+        
         photo_file = await update.effective_message.photo[-1].get_file()
-        if os.path.exists(f"chat_hist/chat_{user1.username}_{user2.username}"):
-            f_path = f"chat_hist/chat_{user1.username}_{user2.username}"
-        else:
-            f_path = f"chat_hist/chat_{user2.username}_{user1.username}"
+        
         photo_num = context.bot_data[f_path]
         await photo_file.download_to_drive(f"{f_path}/{photo_num}.png")
         context.bot_data[f_path] += 1
@@ -58,6 +59,16 @@ async def message_processing(update: Update, context: ContextTypes.DEFAULT_TYPE)
             context.bot_data[f"mess_hist"][f"{user2.id}{user1.id}"].append(
                 update.effective_message
             )
+    elif update.effective_message.video:
+        video_file = await update.effective_message.video.get_file()
+        await video_file.download_to_drive(f"{f_path}/video_temp.mp4")
+        with open(f"{f_path}/video_temp.mp4", "rb") as f:
+            await context.bot.send_video(
+                chat_id=context.bot_data["dialogs"][update.effective_user.id].id,
+                video=f,
+                reply_markup=markup,
+            )
+        
 
 
 async def stop_messaging(update: Update, context: ContextTypes.DEFAULT_TYPE):

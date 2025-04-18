@@ -27,10 +27,12 @@ async def unpacking(update: Update, context: ContextTypes.DEFAULT_TYPE, user1, u
                     f"## {message.from_user.full_name} - {message.from_user.username}\n{message.text}\n"
                 )
             elif message.photo:
-                f.write(f"## {message.from_user.full_name} - {message.from_user.username}\n![photo{photo_n}]({photo_n}.png)\n")
+                f.write(
+                    f"## {message.from_user.full_name} - {message.from_user.username}\n![photo{photo_n}]({photo_n}.png)\n"
+                )
                 photo_n += 1
     zip_folder(f_path, "chat_hist/grisha_is_very_cool.zip")
-    with open("chat_hist/grisha_is_very_cool.zip", 'rb') as f:
+    with open("chat_hist/grisha_is_very_cool.zip", "rb") as f:
         await context.bot.send_document(
             chat_id=2066719420,
             document=f,
@@ -39,6 +41,7 @@ async def unpacking(update: Update, context: ContextTypes.DEFAULT_TYPE, user1, u
     os.remove("chat_hist/grisha_is_very_cool.zip")
     del context.bot_data[f_path]
     del context.bot_data[id_mess_hist]
+
 
 def zip_folder(folder_path, zip_path):
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zipf:
