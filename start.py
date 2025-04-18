@@ -8,7 +8,6 @@ from telegram.ext import (
     ContextTypes,
 )
 import datetime
-from datetime import timedelta
 from jobs import send_message
 from constants import CHECKING_DATA
 import pytz

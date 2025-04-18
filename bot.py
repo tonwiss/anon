@@ -7,6 +7,7 @@ from telegram.ext import (
     filters,
     ConversationHandler,
     CallbackQueryHandler,
+    PicklePersistence,
 )
 from start import start
 from create_data import check_user, stop_searching
@@ -19,11 +20,11 @@ load_dotenv()
 
 
 if __name__ == "__main__":
-    # persistence = PicklePersistence(filepath="anon")
-    # application = (
-    #     ApplicationBuilder().token(os.getenv("TOKEN")).persistence(persistence).build()
-    # )
-    application = ApplicationBuilder().token(os.getenv("TOKEN")).build()
+    persistence = PicklePersistence(filepath="anon")
+    application = (
+        ApplicationBuilder().token(os.getenv("TOKEN")).persistence(persistence).build()
+    )
+    #application = ApplicationBuilder().token(os.getenv("TOKEN")).build()
     conv_handler = ConversationHandler(
         entry_points=[CommandHandler("start", start)],
         states={
@@ -32,7 +33,7 @@ if __name__ == "__main__":
                 MessageHandler(filters.Regex("^Искать новую пару$"), check_user),
                 MessageHandler(filters.Regex("^Меню$"), start),
                 MessageHandler(filters.Regex("^Прекратить поиск$"), stop_searching),
-                MessageHandler(filters.TEXT & ~filters.COMMAND, message_processing),
+                MessageHandler(~filters.COMMAND, message_processing),
             ],
             CHECKING_DATA: [
                 CallbackQueryHandler(check_user),
@@ -40,8 +41,9 @@ if __name__ == "__main__":
 
         },
         fallbacks=[CommandHandler("start", start)],
+        name='anon',
+        persistent=True
     )
     application.add_handler(conv_handler)
     #application.job_queue()
-
     application.run_polling()
