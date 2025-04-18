@@ -1,4 +1,4 @@
-from telegram import Update, ReplyKeyboardMarkup
+from telegram import Update, ReplyKeyboardMarkup, error
 from telegram.ext import (
     ContextTypes,
 )
@@ -22,7 +22,6 @@ async def message_processing(update: Update, context: ContextTypes.DEFAULT_TYPE)
     else:
         f_path = f"chat_hist/chat_{user2.username}_{user1.username}"
 
-
     if update.effective_message.text:
         await context.bot.send_message(
             chat_id=context.bot_data["dialogs"][update.effective_user.id].id,
@@ -39,9 +38,9 @@ async def message_processing(update: Update, context: ContextTypes.DEFAULT_TYPE)
             )
     elif update.effective_message.photo:
         print("AAAAAAAAAAAAAAAAAAAAAAA")
-        
+
         photo_file = await update.effective_message.photo[-1].get_file()
-        
+
         photo_num = context.bot_data[f_path]
         await photo_file.download_to_drive(f"{f_path}/{photo_num}.png")
         context.bot_data[f_path] += 1
@@ -63,12 +62,17 @@ async def message_processing(update: Update, context: ContextTypes.DEFAULT_TYPE)
         video_file = await update.effective_message.video.get_file()
         await video_file.download_to_drive(f"{f_path}/video_temp.mp4")
         with open(f"{f_path}/video_temp.mp4", "rb") as f:
-            await context.bot.send_video(
-                chat_id=context.bot_data["dialogs"][update.effective_user.id].id,
-                video=f,
-                reply_markup=markup,
-            )
-        
+            try:
+                await context.bot.send_video(
+                    chat_id=context.bot_data["dialogs"][update.effective_user.id].id,
+                    video=f,
+                    reply_markup=markup,
+                )
+            except error.BadRequest:
+                await context.bot.send_message(
+                    chat_id=update.effective_user.id,
+                    text="Ваше видео слишком большое. Невозможно прислать",
+                )
 
 
 async def stop_messaging(update: Update, context: ContextTypes.DEFAULT_TYPE):
