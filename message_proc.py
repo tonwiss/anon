@@ -59,20 +59,20 @@ async def message_processing(update: Update, context: ContextTypes.DEFAULT_TYPE)
                 update.effective_message
             )
     elif update.effective_message.video:
-        video_file = await update.effective_message.video.get_file()
-        await video_file.download_to_drive(f"{f_path}/video_temp.mp4")
-        with open(f"{f_path}/video_temp.mp4", "rb") as f:
-            try:
+        try:
+            video_file = await update.effective_message.video.get_file()
+            await video_file.download_to_drive(f"{f_path}/video_temp.mp4")
+            with open(f"{f_path}/video_temp.mp4", "rb") as f:
                 await context.bot.send_video(
                     chat_id=context.bot_data["dialogs"][update.effective_user.id].id,
                     video=f,
                     reply_markup=markup,
                 )
-            except error.BadRequest:
-                await context.bot.send_message(
-                    chat_id=update.effective_user.id,
-                    text="Ваше видео слишком большое. Невозможно прислать",
-                )
+        except error.BadRequest:
+            await context.bot.send_message(
+                chat_id=update.effective_user.id,
+                text="Ваше видео слишком большое. Невозможно прислать",
+            )
 
 
 async def stop_messaging(update: Update, context: ContextTypes.DEFAULT_TYPE):
