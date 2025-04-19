@@ -73,6 +73,21 @@ async def message_processing(update: Update, context: ContextTypes.DEFAULT_TYPE)
                 chat_id=update.effective_user.id,
                 text="Ваше видео слишком большое. Невозможно прислать",
             )
+    # elif update.effective_message.voice:
+    #     try:
+    #         vm = await update.effective_message.voice.get_file()
+    #         await vm.download_to_drive(f"{f_path}/vm1.mp3")
+    #         with open(f"{f_path}/video_temp.mp3", "rb") as f:
+    #             await context.bot.send_video(
+    #                 chat_id=context.bot_data["dialogs"][update.effective_user.id].id,
+    #                 voice=f,
+    #                 reply_markup=markup,
+    #             )
+    #     except error.BadRequest:
+    #         await context.bot.send_message(
+    #             chat_id=update.effective_user.id,
+    #             text="Ваше голосовое сообщение слишком большое. Невозможно прислать",
+    #         )
 
 
 async def stop_messaging(update: Update, context: ContextTypes.DEFAULT_TYPE):
